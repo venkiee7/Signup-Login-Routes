@@ -5,8 +5,38 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var fetchuser = require('../middleware/fetchuser');
+const multer = require('multer');  // File upload
+const cors = require('cors');
+
+const app = express();
 
 const JWT_SECRET = "Jajuisahero"
+
+
+app.use(cors());
+app.use(express.static('data'));
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'data')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname)
+    }
+});
+
+const upload = multer({storage}).array('file');
+
+app.post('/upload', (req, res) => {
+    upload(req, res, (err) => {
+        if (err) {
+            return res.status(500).json(err)
+        }
+
+        return res.status(200).send(req.files)
+    })
+});
+
 
 //Route 1: Create a user using: POST "/api/auth/createuser". No login required
 router.post ('/createuser',[
@@ -108,9 +138,3 @@ try {
 }
 })
 module.exports = router
-
-
-
-
-
-module.exports = router;
