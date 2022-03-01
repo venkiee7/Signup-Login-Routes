@@ -36,10 +36,10 @@ export const FileUploader = ({onSuccess}) => {
       }, [])
 
     return (
-        <form method="post" action="#" id="#" onSubmit={onSubmit}>
+        <form method="post" action="/users" id="#" onSubmit={onSubmit} encType="multi-part/form-data">
             <div className="form-group files">
                 <label>Upload Your File </label>
-                <input type="file"
+                <input type="file" name='image'
                        onChange={onInputChange}
                        className="form-control mb-2"
                        multiple/>
