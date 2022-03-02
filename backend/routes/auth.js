@@ -1,5 +1,7 @@
 const express = require('express');
+var fs = require('fs');
 const User = require('../models/User');
+const Ph = require('../models/Ph');
 const router = express.Router() 
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
@@ -36,6 +38,19 @@ app.post('/upload', (req, res) => {
         return res.status(200).send(req.files)
     })
 });
+
+app.post('/api/photo',function(req,res){
+  var newPh = new Ph();
+  newPh.img.data = fs.readFileSync(req.files.userPhoto.path)
+  newPh.img.contentType = 'image/png';
+  newPh.save();
+});
+
+app.use(multer({ dest: './uploads/',
+    rename: function (fieldname, filename) {
+      return filename;
+    },
+  }));
 
 
 //Route 1: Create a user using: POST "/api/auth/createuser". No login required
